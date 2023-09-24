@@ -17,7 +17,7 @@ const pairABI=[
 ]
 
 const routerABI=[
-    'function getAmountOut(uint amountIn, uint reserveIn, uint reserveOut) external pure returns (uint amountOut)'
+    'function getAmountsOut(uint amountIn, address[] calldata path) external view returns (uint[] memory amounts)'
 ]
 
 module.exports={
