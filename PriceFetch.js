@@ -1,9 +1,9 @@
 const ethers = require('ethers')
 const {
     factoryAddress,
-routerAddress,
-fromAddress,
-toAddress
+    routerAddress,
+    fromAddress,
+    toAddress
 } = require('./AddressList');
 const {    
     erc20ABI,
@@ -20,4 +20,37 @@ const factoryInstance = new ethers.Contract(
     factoryAddress, factoryABI, provider
 )
 
-console.log(factoryInstance)
+// console.log(factoryInstance)
+
+const routerInstance = new ethers.Contract(
+    routerAddress, routerABI, provider
+)
+
+const priceFetch = async (humanFormat)=>{
+    const token1 = new ethers.Contract(
+        fromAddress, erc20ABI, provider
+    )
+    const token2 = new ethers.Contract(
+        toAddress, erc20ABI, provider
+    )
+
+    const decimal1 = await token1.decimals()
+    const decimal2 = await token2.decimals()
+    console.log(decimal1)
+    const amountIn = ethers.utils.parseUnits(humanFormat, decimal1).toString()
+
+    const amountOuts = await routerInstance.getAmountsOut(amountIn, [
+        fromAddress,
+        toAddress
+    ])
+    
+    const humanOutput = ethers.utils.formatUnits(
+        amountOuts[1].toString(),
+        decimal1
+    )
+    console.log('WBNB: ' , humanOutput)
+
+}
+
+humanFormat='100'
+priceFetch(humanFormat)
